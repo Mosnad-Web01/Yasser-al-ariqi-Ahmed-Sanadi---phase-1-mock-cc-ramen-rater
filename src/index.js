@@ -2,6 +2,7 @@
 const BASE_URL = 'http://localhost:3000';
 const ramen_menu = document.getElementById('ramen-menu');
 const new_ramen_form = document.getElementById('new-ramen');
+const name_error = document.getElementById('name-error');
 
 async function fetchRamen() {
    
@@ -48,21 +49,42 @@ function renderRamen(ramens) {
 
 }
 
+
+
+
+
 //------Post data Starts here ----------------------------------------------------------------------------
 new_ramen_form.addEventListener('submit', async (event) => {
   
   event.preventDefault();
   
   const formData = new FormData(new_ramen_form);
-  const ramenData = Object.fromEntries(formData.entries());//get all input values from form and convert them into an object                 
-  postData(`${BASE_URL}/ramens` , ramenData);
+  const ramenData = Object.fromEntries(formData.entries());//get all input values from form and convert them into an object  
+  // check Existence 
+  const ExistingStatus = await checkRamenExistingStatus(ramenData);
+    if (ExistingStatus) {
+      alert('Ramen already exists');
+      name_error.textContent = 'Ramen already exists';
+      return;
+    }
+    else
+    {
+      postData(`${BASE_URL}/ramens` , ramenData);
+    }
 
 });
+async function checkRamenExistingStatus(ramenData ) {
+
+  const response = await fetch(`${BASE_URL}/ramens`);
+  const data = await response.json();
+  return data.some(ramen => ramen.name === ramenData.name); // returns true or false
+
+}
 
 async function postData(url , ramenDataObject) {
 
   try {
-    const response = await fetch(url , {
+      const response = await fetch(url , {
       method : 'POST',
       headers :{
         'Content-Type' : 'application/json'
@@ -75,15 +97,14 @@ async function postData(url , ramenDataObject) {
     }
 
     const data = await response.json();
+    alert('Ramen added successfully');
     //console.log(data);
     fetchRamen();
-
-
-
   } catch (error) {
     console.log(error);
   }
 }
+
 
 
 document.addEventListener('DOMContentLoaded', () => {

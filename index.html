@@ -39,6 +39,7 @@
     <h4>Add New Ramen</h4>
     <label for="name">Name: </label>
     <input type="text" name="name" id="new-name" required/>
+    <span id="name-error" style="color: red;"></span>
     <label for="restaurant">Restaurant: </label>
     <input type="text" name="restaurant" id="new-restaurant" required />
     <label for="image">Image: </label>
@@ -53,17 +54,4 @@
 </body>
 
 </html>
-<!-- fetch('https://example.com/api/posts', {
-  method: 'POST', // Specify the HTTP method
-  headers: {
-    'Content-Type': 'application/json' // Specify the content type
-  },
-  body: JSON.stringify(data) // Convert the data to JSON
-})
-  .then(response => response.json()) // Parse the JSON response
-  .then(data => {
-    console.log('Success:', data); // Handle the response data
-  })
-  .catch((error) => {
-    console.error('Error:', error); // Handle any errors
-  }); -->
+
