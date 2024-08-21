@@ -12,7 +12,6 @@
   <header>
     <h3>Ramen Rater</h3>
   </header>
-
   <!-- Ramen Menu -->
   <div id="ramen-menu">
     <!-- Ramen Images Here -->
@@ -34,24 +33,53 @@
     Insert comment here
   </p>
 
+  <!-- Edit/Delete Buttons -->
+  <div class="edit-delete-btns" style="display: flex;">
+
+  </div>
+
+
+
   <!-- New Ramen Form -->
   <form id="new-ramen">
     <h4>Add New Ramen</h4>
     <label for="name">Name: </label>
-    <input type="text" name="name" id="new-name" required/>
+    <input type="text" name="name" id="new-name" required />
     <span id="name-error" style="color: red;"></span>
     <label for="restaurant">Restaurant: </label>
     <input type="text" name="restaurant" id="new-restaurant" required />
     <label for="image">Image: </label>
     <input type="text" name="image" id="new-image" required />
     <label for="rating">Rating: </label>
-    <input type="number" name="rating" id="new-rating" min="0" max="10"  required/>
+    <input type="number" name="rating" id="new-rating" min="0" max="10" required />
     <label for="new-comment">Comment: </label>
     <textarea name="new-comment" id="new-comment"></textarea>
     <input type="submit" value="Create" />
   </form>
+
+
+  <!-- Edit Ramen Form -->
+  <form id="edit-ramen" style=" display: none;">
+    <h4>Edit Ramen</h4>
+    <label for="edit-name">Name: </label>
+    <input type="text" name="name" id="edit-name" required />
+    <label for="edit-restaurant">Restaurant: </label>
+    <input type="text" name="restaurant" id="edit-restaurant" required />
+    <label for="edit-image">Image: </label>
+    <input type="text" name="image" id="edit-image" required />
+    <label for="edit-rating">Rating: </label>
+    <input type="number" name="rating" id="edit-rating" min="0" max="10" required />
+    <label for="edit-comment">Comment: </label>
+    <textarea name="comment" id="edit-comment"></textarea>
+    <input type="submit" value="Update" />
+  </form>
+
+
+
+
+
+
   <script defer type="text/javascript" src="./src/index.js"></script>
 </body>
 
 </html>
-

@@ -100,3 +100,59 @@ form h4 {
   color: white;
   background-color: black;
 }
+
+
+
+.edit-btn
+{
+  background-color: #155724;
+  border-color: #c3e6cb;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #c3e6cb;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition-duration: 0.4s;
+}
+
+.edit-btn:hover
+{
+  background-color: white;
+  color: #155724;
+}
+.delete-btn
+{
+  background-color: #721c24;
+  border-color: #c3e6cb;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #c3e6cb;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  transition-duration: 0.4s;
+}
+
+.delete-btn:hover
+{
+  background-color: white;
+  color: #721c24;
+}
+  
+
+
