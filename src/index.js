@@ -1,6 +1,7 @@
 // write your code here 
 const BASE_URL = 'http://localhost:3000';
 const ramen_menu = document.getElementById('ramen-menu');
+const new_ramen_form = document.getElementById('new-ramen');
 
 async function fetchRamen() {
    
@@ -47,7 +48,42 @@ function renderRamen(ramens) {
 
 }
 
+//------Post data Starts here ----------------------------------------------------------------------------
+new_ramen_form.addEventListener('submit', async (event) => {
+  
+  event.preventDefault();
+  
+  const formData = new FormData(new_ramen_form);
+  const ramenData = Object.fromEntries(formData.entries());//get all input values from form and convert them into an object                 
+  postData(`${BASE_URL}/ramens` , ramenData);
 
+});
+
+async function postData(url , ramenDataObject) {
+
+  try {
+    const response = await fetch(url , {
+      method : 'POST',
+      headers :{
+        'Content-Type' : 'application/json'
+      },
+      body : JSON.stringify(ramenDataObject),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+    //console.log(data);
+    fetchRamen();
+
+
+
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
 document.addEventListener('DOMContentLoaded', () => {
