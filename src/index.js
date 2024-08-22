@@ -1,166 +1,166 @@
 // Constants
 const BASE_URL = "http://localhost:3000";
-const ramen_menu = document.getElementById("ramen-menu");
-const new_ramen_form = document.getElementById("new-ramen");
-const name_error = document.getElementById("name-error");
-const edit_delete_btns = document.querySelector(".edit-delete-btns");
+const ramenMenu = document.getElementById("ramen-menu");
+const newRamenForm = document.getElementById("new-ramen");
+const nameError = document.getElementById("name-error");
+const editDeleteBtns = document.querySelector(".edit-delete-btns");
+const ramenDetailElements = {
+  image: document.querySelector(".detail-image"),
+  name: document.querySelector(".name"),
+  restaurant: document.querySelector(".restaurant"),
+  rating: document.querySelector("#rating-display"),
+  comment: document.querySelector("#comment-display"),
+};
+const editForm = document.getElementById("edit-ramen");
 
 // Event Listeners
-document.addEventListener("DOMContentLoaded", () => {
-  fetchRamen();
-});
-
-new_ramen_form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const formData = new FormData(new_ramen_form);
-  const ramenData = Object.fromEntries(formData.entries());
-
-  const existingStatus = await checkRamenExistingStatus(ramenData);
-  if (existingStatus) {
-    alert("Ramen already exists");
-    name_error.textContent = "Ramen already exists";
-  } else {
-    postData(`${BASE_URL}/ramens`, ramenData);
-  }
-});
+document.addEventListener("DOMContentLoaded", fetchAndRenderRamen);
+newRamenForm.addEventListener("submit", handleNewRamenSubmit);
 
 // Fetch and Render Functions
-async function fetchRamen() {
+async function fetchAndRenderRamen() {
   try {
-    const response = await fetch(`${BASE_URL}/ramens`);
-    const data = await response.json();
-    renderRamen(data);
+    const ramenData = await fetchRamenData();
+    renderRamenMenu(ramenData);
+    // Optionally, display the first ramen's details by default
+    if (ramenData.length) {
+      displayRamenDetails(ramenData[0]);
+    }
   } catch (error) {
-    console.log(error);
+    console.error("Failed to fetch ramen data:", error);
   }
 }
 
-function renderRamen(ramens) {
-  const ramen_detailed_img = document.querySelector(".detail-image");
-  const ramen_name = document.querySelector(".name");
-  const ramen_restaurant = document.querySelector(".restaurant");
-  const ramen_rating_display = document.querySelector("#rating-display");
-  const ramen_comment_display = document.querySelector("#comment-display");
-  const editForm = document.getElementById("edit-ramen");
+async function fetchRamenData() {
+  const response = await fetch(`${BASE_URL}/ramens`);
+  return response.json();
+}
 
-  // Clear existing buttons
-  edit_delete_btns.innerHTML = "";
+function renderRamenMenu(ramens) {
+  ramenMenu.innerHTML = ""; 
+  editDeleteBtns.innerHTML = ""; 
 
   ramens.forEach((ramen) => {
     const img = document.createElement("img");
     img.src = ramen.image;
-    ramen_menu.appendChild(img);
+    ramenMenu.appendChild(img);
 
     img.addEventListener("click", () => {
-      // Hide edit form and show new ramen form
-      editForm.style.display = "none";
-      new_ramen_form.style.display = "block";
-
-      // Update details section
-      ramen_detailed_img.src = ramen.image;
-      ramen_name.textContent = ramen.name;
-      ramen_restaurant.textContent = ramen.restaurant;
-      ramen_rating_display.textContent = ramen.rating;
-      ramen_comment_display.textContent = ramen.comment;
-
-      // Clear existing buttons
-      edit_delete_btns.innerHTML = "";
-
-      // Create and add Edit button
-      const show_edit_form_btn = document.createElement("button");
-      show_edit_form_btn.textContent = "Edit";
-      show_edit_form_btn.classList.add("edit-btn");
-      show_edit_form_btn.addEventListener("click", () => {
-        // Show edit form and hide new ramen form
-        editForm.style.display = "block";
-        editForm.scrollIntoView({ behavior: "smooth" });
-        new_ramen_form.style.display = "none";
-        populateEditForm(ramen);
-      });
-      edit_delete_btns.appendChild(show_edit_form_btn);
-
-      // Create and add Delete button
-      const delete_btn = document.createElement("button");
-      delete_btn.textContent = "Delete";
-      delete_btn.classList.add("delete-btn");
-      delete_btn.addEventListener("click", async () => {
-        await deleteRamen(`${BASE_URL}/ramens/${ramen.id}`);
-      });
-      edit_delete_btns.appendChild(delete_btn);
+      displayRamenDetails(ramen);
+      setupEditDeleteButtons(ramen);
     });
   });
 }
 
-// Form Handling Functions
+function displayRamenDetails(ramen) {
+  ramenDetailElements.image.src = ramen.image;
+  ramenDetailElements.name.textContent = ramen.name;
+  ramenDetailElements.restaurant.textContent = ramen.restaurant;
+  ramenDetailElements.rating.textContent = ramen.rating;
+  ramenDetailElements.comment.textContent = ramen.comment;
+
+
+  editForm.style.display = "none";
+  newRamenForm.style.display = "block";
+}
+
+function setupEditDeleteButtons(ramen) {
+  editDeleteBtns.innerHTML = ""; 
+
+  const editBtn = createButton("Edit", "edit-btn", () => {
+    showEditForm(ramen);
+  });
+
+  const deleteBtn = createButton("Delete", "delete-btn", async () => {
+    await deleteRamen(ramen.id);
+    alert(`${ramen.name} has been deleted successfully.`);
+    fetchAndRenderRamen();
+  });
+
+  editDeleteBtns.append(editBtn, deleteBtn);
+}
+
+
+async function handleNewRamenSubmit(event) {
+  event.preventDefault();
+  const ramenData = getFormData(newRamenForm);
+
+  if (await isRamenExisting(ramenData)) {
+    showErrorMessage("Ramen already exists");
+  } else {
+    await postRamenData(ramenData);
+    resetForm(newRamenForm);
+    alert(`${ramenData.name} has been added successfully.`);
+    fetchAndRenderRamen();
+  }
+}
+
+function showEditForm(ramen) {
+  populateEditForm(ramen);
+  editForm.style.display = "block";
+  editForm.scrollIntoView({ behavior: "smooth" });
+  newRamenForm.style.display = "none";
+}
+
 function populateEditForm(ramen) {
-  document.getElementById("edit-name").value = ramen.name;
-  document.getElementById("edit-restaurant").value = ramen.restaurant;
-  document.getElementById("edit-image").value = ramen.image;
-  document.getElementById("edit-rating").value = ramen.rating;
-  document.getElementById("edit-comment").value = ramen.comment;
+  editForm.elements["name"].value = ramen.name;
+  editForm.elements["restaurant"].value = ramen.restaurant;
+  editForm.elements["image"].value = ramen.image;
+  editForm.elements["rating"].value = ramen.rating;
+  editForm.elements["comment"].value = ramen.comment;
 }
 
-async function checkRamenExistingStatus(ramenData) {
-  const response = await fetch(`${BASE_URL}/ramens`);
-  const data = await response.json();
-  return data.some((ramen) => ramen.name === ramenData.name);
+async function isRamenExisting(ramenData) {
+  const existingRamen = await fetchRamenData();
+  return existingRamen.some((ramen) => ramen.name === ramenData.name);
 }
 
-async function postData(url, ramenDataObject) {
+function getFormData(form) {
+  const formData = new FormData(form);
+  return Object.fromEntries(formData.entries());
+}
+
+function resetForm(form) {
+  form.reset();
+  nameError.textContent = "";
+}
+
+function showErrorMessage(message) {
+  nameError.textContent = message;
+}
+
+
+async function postRamenData(ramenData) {
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`${BASE_URL}/ramens`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(ramenDataObject),
+      body: JSON.stringify(ramenData),
     });
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    fetchRamen();
+    if (!response.ok) throw new Error("Failed to post ramen data");
   } catch (error) {
-    console.log(error);
+    console.error("Error:", error);
   }
 }
 
-async function updateRamen(url, ramenDataObject) {
+async function deleteRamen(ramenId) {
   try {
-    const response = await fetch(url, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(ramenDataObject),
-    });
-
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    fetchRamen();
-    document.getElementById("edit-ramen").style.display = "none";
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-async function deleteRamen(url) {
-  try {
-    const response = await fetch(url, {
+    const response = await fetch(`${BASE_URL}/ramens/${ramenId}`, {
       method: "DELETE",
     });
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
-    }
-
-    const data = await response.json();
-    fetchRamen();
+    if (!response.ok) throw new Error("Failed to delete ramen");
   } catch (error) {
-    console.log(error);
+    console.error("Error:", error);
   }
+}
+
+// Utility Functions ( Button )
+function createButton(text, className, onClick) {
+  const button = document.createElement("button");
+  button.textContent = text;
+  button.classList.add(className);
+  button.addEventListener("click", onClick);
+  return button;
 }

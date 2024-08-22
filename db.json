@@ -55,6 +55,22 @@
       "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRuIhcrbJR1qTcTeHta6hvZlELxBR8glQkkBw&s",
       "rating": "2",
       "new-comment": "e"
+    },
+    {
+      "id": "7910",
+      "name": "Yasser",
+      "restaurant": "Alhamra",
+      "image": "https://www.foodiesfeed.com/wp-content/uploads/2023/06/burger-with-melted-cheese.jpg",
+      "rating": "5",
+      "new-comment": "Good"
+    },
+    {
+      "id": "f2e7",
+      "name": "Mohammed",
+      "restaurant": "zakarah",
+      "image": "https://static.vecteezy.com/system/resources/thumbnails/026/794/680/small/double-hamburger-isolated-on-white-background-fresh-burger-fast-food-with-beef-and-cream-cheese-realistic-image-ultra-hd-high-design-very-detailed-free-photo.jpg",
+      "rating": "4",
+      "new-comment": "Hello"
     }
   ]
 }
