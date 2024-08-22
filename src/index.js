@@ -1,5 +1,5 @@
 // Constants
-const BASE_URL = "../db.json";
+const BASE_URL = "http://localhost:3000";
 const ramenMenu = document.getElementById("ramen-menu");
 const newRamenForm = document.getElementById("new-ramen");
 const nameError = document.getElementById("name-error");
